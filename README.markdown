@@ -25,12 +25,6 @@ A basic Bukkit vote listener looks something like this:
 
     }
 
-## Compiling Vote Listeners
-
-Vote listeners can be compiled by including Votifier in the class path. For example:
-
-	javac -cp Votifier.jar FlatfileVoteListener.java
-
 ## Encryption
 
 Votifier uses one-way RSA encryption to ensure that only a trusted toplist can tell Votifier when a vote has been made.  When it is first run, Votifier will generate a 2048 bit RSA key pair and store the keys in the `./plugins/votifier/rsa` directory.  When you link Votifier with a toplist, the toplist will ask you for your Votifier public key - this is located at `./plugins/votifier/rsa/public.key` and the toplist will use this key to encrypt vote data.  It is essential that you do not share these keys with your players, as a smart player can use the key to create a spoof packet and tell Votifier that they voted when they really didn't.
