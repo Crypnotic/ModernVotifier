@@ -12,8 +12,8 @@ import java.util.logging.Level;
 import javax.crypto.BadPaddingException;
 
 import me.theinfobug.modernvotifier.core.ModernVotifier;
-import me.theinfobug.modernvotifier.core.crypto.RSA;
 import me.theinfobug.modernvotifier.core.objects.Vote;
+import me.theinfobug.modernvotifier.core.utils.Encryption;
 
 public class VoteReceiver extends Thread {
 
@@ -67,7 +67,7 @@ public class VoteReceiver extends Thread {
 				byte[] block = new byte[256];
 				in.read(block, 0, block.length);
 
-				block = RSA.decrypt(block, votifier.getKeyPair().getPrivate());
+				block = Encryption.decrypt(block, votifier.getKeyPair().getPrivate());
 				int position = 0;
 
 				String opcode = readString(block, position);

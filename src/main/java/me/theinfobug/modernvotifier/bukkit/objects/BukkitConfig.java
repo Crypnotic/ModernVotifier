@@ -18,7 +18,6 @@ public class BukkitConfig implements IConfig {
 		this.plugin = plugin;
 	}
 
-	@Override
 	public void init() {
 		try {
 			this.folder = plugin.getDataFolder();
@@ -35,27 +34,22 @@ public class BukkitConfig implements IConfig {
 		}
 	}
 
-	@Override
 	public File getFolder() {
 		return folder;
 	}
 
-	@Override
 	public File getFile() {
 		return file;
 	}
 
-	@Override
 	public String get(String path) {
 		return config.getString(path);
 	}
 
-	@Override
 	public void set(String path, Object value) {
 		config.set(path, value);
 	}
 
-	@Override
 	public void save() {
 		try {
 			config.save(file);

@@ -15,7 +15,6 @@ public class BukkitVoteEvent extends Event implements VoteEvent {
 		this.vote = vote;
 	}
 
-	@Override
 	public Vote getVote() {
 		return vote;
 	}

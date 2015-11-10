@@ -29,27 +29,22 @@ public class ModernVotifierBukkit extends JavaPlugin implements IPlatform {
 		votifier.disable();
 	}
 
-	@Override
 	public IConfig getCoreConfig() {
 		return config;
 	}
 
-	@Override
 	public String getAddress() {
 		return getServer().getIp() == null ? "0.0.0.0" : getServer().getIp();
 	}
 
-	@Override
 	public void callVoteEvent(Vote vote) {
 		getServer().getPluginManager().callEvent(new BukkitVoteEvent(vote));
 	}
 
-	@Override
 	public void runSynchronously(Runnable runnable) {
 		getServer().getScheduler().scheduleSyncDelayedTask(this, runnable);
 	}
 
-	@Override
 	public void log(Level level, String message) {
 		getLogger().log(level, message);
 	}

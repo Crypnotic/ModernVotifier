@@ -4,11 +4,10 @@ import java.io.File;
 import java.security.KeyPair;
 import java.util.logging.Level;
 
-import me.theinfobug.modernvotifier.core.crypto.RSAIO;
-import me.theinfobug.modernvotifier.core.crypto.RSAKeygen;
 import me.theinfobug.modernvotifier.core.net.VoteReceiver;
 import me.theinfobug.modernvotifier.core.objects.connectors.IConfig;
 import me.theinfobug.modernvotifier.core.objects.connectors.IPlatform;
+import me.theinfobug.modernvotifier.core.utils.Encryption;
 
 public class ModernVotifier {
 
@@ -64,10 +63,10 @@ public class ModernVotifier {
 			File directory = new File(config.getFolder(), "rsa");
 			if (!directory.exists()) {
 				directory.mkdir();
-				keyPair = RSAKeygen.generate(2048);
-				RSAIO.save(directory, keyPair);
+				keyPair = Encryption.generate(2048);
+				Encryption.saveKeypair(directory, keyPair);
 			} else {
-				keyPair = RSAIO.load(directory);
+				keyPair = Encryption.loadKeypair(directory);
 			}
 		} catch (Exception exception) {
 			log(Level.SEVERE, "An error occured whilst attempting to create the RSA keypairs. Exiting...");
