@@ -15,6 +15,8 @@ import ninja.leaping.configurate.loader.ConfigurationLoader;
 
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
+import org.spongepowered.api.event.game.state.GameStartedServerEvent;
+import org.spongepowered.api.event.game.state.GameStoppingServerEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.service.config.DefaultConfig;
 
@@ -43,7 +45,7 @@ public class ModernVotifierSponge implements IPlatform {
 	private SpongeConfig config;
 	
 	@Subscribe
-	public void onEnable(ServerStartedEvent event){
+	public void onEnable(GameStartedServerEvent event){
 		this.votifier = new ModernVotifier(this, "$project.version");
 		this.config = new SpongeConfig(this, configFile, configManager);
 		
@@ -51,7 +53,7 @@ public class ModernVotifierSponge implements IPlatform {
 	}
 	
 	@Subscribe
-	public void onDisable(ServerStoppingEvent event){
+	public void onDisable(GameStoppingServerEvent event){
 		votifier.disable();
 	}
 	
