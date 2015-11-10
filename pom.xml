@@ -14,13 +14,22 @@
 			<name>SpigotMC-API Repository</name>
 			<url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
 		</repository>
+		<repository>
+			<id>sponge-repo</id>
+			<name>SpongePowered-API Repository</name>
+			<url>http://repo.spongepowered.org/Sponge/maven/</url>
+		</repository>
 	</repositories>
 	<dependencies>
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
 			<version>1.8.8-R0.1-SNAPSHOT</version>
-			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.spongepowered</groupId>
+			<artifactId>spongeapi</artifactId>
+			<version>2.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 	<build>

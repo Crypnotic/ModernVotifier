@@ -1,4 +1,4 @@
-package me.theinfobug.modernvotifier.core.net;
+package me.theinfobug.modernvotifier.core.network;
 
 import java.io.BufferedWriter;
 import java.io.InputStream;

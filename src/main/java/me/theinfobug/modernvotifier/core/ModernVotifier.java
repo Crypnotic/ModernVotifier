@@ -4,7 +4,7 @@ import java.io.File;
 import java.security.KeyPair;
 import java.util.logging.Level;
 
-import me.theinfobug.modernvotifier.core.net.VoteReceiver;
+import me.theinfobug.modernvotifier.core.network.VoteReceiver;
 import me.theinfobug.modernvotifier.core.objects.connectors.IConfig;
 import me.theinfobug.modernvotifier.core.objects.connectors.IPlatform;
 import me.theinfobug.modernvotifier.core.utils.Encryption;
