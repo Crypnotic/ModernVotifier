@@ -106,12 +106,11 @@ public class VoteReceiver extends Thread {
 			} catch (SocketException ex) {
 				ModernVotifier.log(Level.WARNING, "Protocol error. Ignoring packet - " + ex.getLocalizedMessage());
 			} catch (BadPaddingException ex) {
-				ModernVotifier.log(Level.WARNING, "Unable to decrypt vote record. Make sure that that your public key");
-				ModernVotifier.log(Level.WARNING, "matches the one you gave the server list.");
-				ex.printStackTrace();
+				ModernVotifier
+						.log(Level.WARNING,
+								"Unable to decrypt vote record. Make sure that that your public key matches the one you gave the server list.");
 			} catch (Exception ex) {
 				ModernVotifier.log(Level.WARNING, "Exception caught while receiving a vote notification");
-				ex.printStackTrace();
 			}
 		}
 	}
