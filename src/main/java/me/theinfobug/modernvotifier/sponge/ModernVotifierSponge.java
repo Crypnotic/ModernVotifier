@@ -46,7 +46,7 @@ public class ModernVotifierSponge implements IPlatform {
 	
 	@Subscribe
 	public void onEnable(GameStartedServerEvent event){
-		this.votifier = new ModernVotifier(this, "$project.version");
+		this.votifier = new ModernVotifier(this, "${project.version}");
 		this.config = new SpongeConfig(this, configFile, configManager);
 		
 		votifier.enable();
