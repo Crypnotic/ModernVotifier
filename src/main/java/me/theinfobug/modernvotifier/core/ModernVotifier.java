@@ -39,7 +39,7 @@ public class ModernVotifier {
 
 		config.init();
 
-		if (config.get("Listener.host") == null) {
+		if (config.get("host") == null) {
 			log(Level.INFO, "Configuring Votifier for the first time...");
 
 			this.host = platform.getAddress();
@@ -74,6 +74,10 @@ public class ModernVotifier {
 		}
 
 		try {
+			this.host = config.get("host");
+			this.port = Integer.parseInt(config.get("port"));
+			this.debug = Boolean.parseBoolean(config.get("debug"));
+			
 			receiver = new VoteReceiver(this, host, port);
 			receiver.start();
 		} catch (Exception exception) {

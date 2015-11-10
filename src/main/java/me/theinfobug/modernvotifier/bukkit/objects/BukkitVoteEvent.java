@@ -8,7 +8,7 @@ import org.bukkit.event.HandlerList;
 
 public class BukkitVoteEvent extends Event implements VoteEvent {
 
-	private static HandlerList handlers = new HandlerList();
+	private static final HandlerList handlers = new HandlerList();
 	private Vote vote;
 
 	public BukkitVoteEvent(Vote vote) {
@@ -21,6 +21,10 @@ public class BukkitVoteEvent extends Event implements VoteEvent {
 
 	@Override
 	public HandlerList getHandlers() {
+		return handlers;
+	}
+	
+	public static HandlerList getHandlerList() {
 		return handlers;
 	}
 }

@@ -51,14 +51,14 @@ public class Encryption {
 	}
 
 	public static KeyPair loadKeypair(File directory) throws Exception {
-		File publicKeyFile = new File(directory, "public.key");
+		File publicKeyFile = new File(directory, "/public.key");
 		FileInputStream in = new FileInputStream(publicKeyFile);
 		byte[] encodedPublicKey = new byte[(int) publicKeyFile.length()];
 		in.read(encodedPublicKey);
 		encodedPublicKey = parseBase64Binary(new String(encodedPublicKey));
 		in.close();
 
-		File privateKeyFile = new File(directory + "private.key");
+		File privateKeyFile = new File(directory + "/private.key");
 		in = new FileInputStream(privateKeyFile);
 		byte[] encodedPrivateKey = new byte[(int) privateKeyFile.length()];
 		in.read(encodedPrivateKey);
