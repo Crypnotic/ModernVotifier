@@ -12,15 +12,15 @@ If you want to customize Votifier, simply the edit `./plugins/votifier/config.ym
 
 A vote listener implements the `VoteListener` interface which contains an implementation of the `voteMade` method.
 
-A basic vote listener looks something like this:
+A basic Bukkit vote listener looks something like this:
 
-    import com.vexsoftware.votifier.model.Vote;
-    import com.vexsoftware.votifier.model.VoteListener;
+    import me.theinfobug.modernvotifier.bukkit.objects.BukkitVoteEvent;
 
-    public class BasicVoteListener implements VoteListener {
+    public class BasicBukkitVoteListener implements Listener {
 
-	    public void voteMade(Vote vote) {
-		    System.out.println("Received: " + vote);
+		@EventHandler
+	    public void onVote(BukkitVoteEvent event) {
+		    System.out.println("Received: " + event.getVote());
 	    }
 
     }
