@@ -3,6 +3,7 @@ package me.theinfobug.modernvotifier.core.utils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -17,11 +18,23 @@ import javax.crypto.Cipher;
 
 import me.theinfobug.modernvotifier.core.ModernVotifier;
 
+import com.google.common.io.ByteArrayDataInput;
+import com.google.common.io.ByteStreams;
+
 public class Encryption {
 
 	private static final char[] encodeMap = initEncodeMap();
 	private static final byte[] decodeMap = initDecodeMap();
 	private static final byte PADDING = 127;
+
+	public static ByteArrayDataInput parse(KeyPair keys, InputStream input, int offset, int bits) {
+		try {
+			byte[] block = Streams.read(input, offset, bits);
+			return ByteStreams.newDataInput(decrypt(block, keys.getPrivate()));
+		} catch (Exception exception) {
+			return null;
+		}
+	}
 
 	public static byte[] encrypt(byte[] data, PublicKey key) throws Exception {
 		Cipher cipher = Cipher.getInstance("RSA");

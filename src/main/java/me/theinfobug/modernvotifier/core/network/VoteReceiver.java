@@ -1,5 +1,6 @@
 package me.theinfobug.modernvotifier.core.network;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.net.InetSocketAddress;
@@ -8,11 +9,12 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.logging.Level;
 
-import javax.crypto.BadPaddingException;
-
 import me.theinfobug.modernvotifier.core.ModernVotifier;
 import me.theinfobug.modernvotifier.core.objects.Vote;
 import me.theinfobug.modernvotifier.core.utils.Encryption;
+import me.theinfobug.modernvotifier.core.utils.Streams;
+
+import com.google.common.io.ByteArrayDataInput;
 
 public class VoteReceiver extends Thread {
 
@@ -56,18 +58,16 @@ public class VoteReceiver extends Thread {
 				Socket socket = server.accept();
 				socket.setSoTimeout(5000);
 				InputStream input = socket.getInputStream();
-				OutputStreamWriter writer = new OutputStreamWriter(socket.getOutputStream());
+				OutputStreamWriter output = new OutputStreamWriter(socket.getOutputStream());
 
-				writer.write("VOTIFIER " + votifier.getVersion() + "\n");
-				writer.flush();
+				Streams.write(output, "VOTIFIER " + votifier.getVersion() + "\n");
 
-				byte[] block = new byte[256];
-				input.read(block, 0, block.length);
+				ByteArrayDataInput stream = Encryption.parse(votifier.getKeyPair(), input, 0, 256);
+				if (stream == null) {
+					throw new Exception();
+				}
 
-				block = Encryption.decrypt(block, votifier.getKeyPair().getPrivate());
-				int position = 0;
-
-				String prefix = read(block, position);
+				String prefix = stream.readLine();
 				if (!prefix.equals("VOTE")) {
 					ModernVotifier
 							.log(Level.WARNING,
@@ -75,12 +75,12 @@ public class VoteReceiver extends Thread {
 					return;
 				}
 
-				String service = read(block, position += prefix.length() + 1);
-				String username = read(block, position += service.length() + 1);
-				String address = read(block, position += username.length() + 1);
-				String timestamp = read(block, position += address.length() + 1);
+				String service = stream.readLine();
+				String address = stream.readLine();
+				String username = stream.readLine();
+				String timestamp = stream.readLine();
 
-				final Vote vote = new Vote(service, username, address, timestamp);
+				final Vote vote = new Vote(service, address, username, timestamp);
 
 				if (votifier.isDebugging()) {
 					ModernVotifier.log(Level.INFO, "Received vote record -> " + vote);
@@ -92,30 +92,18 @@ public class VoteReceiver extends Thread {
 					}
 				});
 
-				writer.close();
+				output.close();
 				input.close();
 				socket.close();
-			} catch (SocketException ex) {
-				ModernVotifier.log(Level.WARNING, "Protocol error. Ignoring packet - " + ex.getLocalizedMessage());
-			} catch (BadPaddingException ex) {
-				ModernVotifier
-						.log(Level.WARNING,
-								"Unable to decrypt vote record. Make sure that that your public key matches the one you gave to the server list.");
-			} catch (Exception ex) {
+			} catch (SocketException exception) {
+				ModernVotifier.log(Level.WARNING,
+						"Protocol error. Ignoring packet - " + exception.getLocalizedMessage());
+			} catch (IOException exception) {
+				ModernVotifier.log(Level.WARNING, "An error occured whilst attempting to read incoming decrypted data");
+			} catch (Exception exception) {
 				ModernVotifier.log(Level.WARNING, "Exception caught while receiving a vote notification");
 			}
 		}
-	}
-
-	private String read(byte[] data, int offset) {
-		StringBuilder builder = new StringBuilder();
-		for (int i = offset; i < data.length; i++) {
-			if (data[i] == '\n') {
-				break;
-			}
-			builder.append((char) data[i]);
-		}
-		return builder.toString();
 	}
 
 	public Boolean isRunning() {

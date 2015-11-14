@@ -32,7 +32,7 @@ public class Vote {
 
 	@Override
 	public String toString() {
-		return "Vote (from=" + service + ", username=" + username + ", address=" + address + ", timestamp=" + timestamp
-				+ ")";
+		return "Vote@" + hashCode() + "{\n\t(from=" + service + ", username=" + username + ", address=" + address
+				+ ", timestamp=" + timestamp + ")\n}";
 	}
 }
