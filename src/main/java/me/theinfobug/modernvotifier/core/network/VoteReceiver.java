@@ -1,6 +1,5 @@
 package me.theinfobug.modernvotifier.core.network;
 
-import java.io.BufferedWriter;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.net.InetSocketAddress;
@@ -31,8 +30,9 @@ public class VoteReceiver extends Thread {
 
 	public void shutdown() {
 		running = false;
-		if (server == null)
+		if (server == null) {
 			return;
+		}
 		try {
 			server.close();
 		} catch (Exception ex) {
@@ -46,53 +46,45 @@ public class VoteReceiver extends Thread {
 			server = new ServerSocket();
 			server.bind(new InetSocketAddress(host, port));
 		} catch (Exception ex) {
-			ModernVotifier.log(Level.SEVERE, "Error initializing vote receiver. Please verify that the configured");
-			ModernVotifier.log(Level.SEVERE, "IP address and port are not already in use. This is a common problem");
-			ModernVotifier.log(Level.SEVERE,
-					"with hosting services and, if so, you should check with your hosting provider.");
-			ex.printStackTrace();
+			ModernVotifier
+					.log(Level.SEVERE,
+							"Error initializing vote receiver. Please verify that the configured IP address and port are not already in use. This is a common problem with hosting services and, if so, you should check with your hosting provider.");
 			return;
 		}
 		while (running) {
 			try {
 				Socket socket = server.accept();
 				socket.setSoTimeout(5000);
-				BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-				InputStream in = socket.getInputStream();
+				InputStream input = socket.getInputStream();
+				OutputStreamWriter writer = new OutputStreamWriter(socket.getOutputStream());
 
-				writer.write("VOTIFIER " + votifier.getVersion());
-				writer.newLine();
+				writer.write("VOTIFIER " + votifier.getVersion() + "\n");
 				writer.flush();
 
 				byte[] block = new byte[256];
-				in.read(block, 0, block.length);
+				input.read(block, 0, block.length);
 
 				block = Encryption.decrypt(block, votifier.getKeyPair().getPrivate());
 				int position = 0;
 
-				String opcode = readString(block, position);
-				position += opcode.length() + 1;
-				if (!opcode.equals("VOTE")) {
-					throw new Exception("Unable to decode RSA");
+				String prefix = read(block, position);
+				if (!prefix.equals("VOTE")) {
+					ModernVotifier
+							.log(Level.WARNING,
+									"An exception occured whilst attempting to decode an incoming vote. This may be an error of the client sending the vote, or the message was tampered with in transport.");
+					return;
 				}
 
-				String serviceName = readString(block, position);
-				position += serviceName.length() + 1;
-				String username = readString(block, position);
-				position += username.length() + 1;
-				String address = readString(block, position);
-				position += address.length() + 1;
-				String timeStamp = readString(block, position);
-				position += timeStamp.length() + 1;
+				String service = read(block, position += prefix.length() + 1);
+				String username = read(block, position += service.length() + 1);
+				String address = read(block, position += username.length() + 1);
+				String timestamp = read(block, position += address.length() + 1);
 
-				final Vote vote = new Vote();
-				vote.setServiceName(serviceName);
-				vote.setUsername(username);
-				vote.setAddress(address);
-				vote.setTimeStamp(timeStamp);
+				final Vote vote = new Vote(service, username, address, timestamp);
 
-				if (votifier.isDebugging())
+				if (votifier.isDebugging()) {
 					ModernVotifier.log(Level.INFO, "Received vote record -> " + vote);
+				}
 
 				votifier.getPlatform().runSynchronously(new Runnable() {
 					public void run() {
@@ -101,25 +93,26 @@ public class VoteReceiver extends Thread {
 				});
 
 				writer.close();
-				in.close();
+				input.close();
 				socket.close();
 			} catch (SocketException ex) {
 				ModernVotifier.log(Level.WARNING, "Protocol error. Ignoring packet - " + ex.getLocalizedMessage());
 			} catch (BadPaddingException ex) {
 				ModernVotifier
 						.log(Level.WARNING,
-								"Unable to decrypt vote record. Make sure that that your public key matches the one you gave the server list.");
+								"Unable to decrypt vote record. Make sure that that your public key matches the one you gave to the server list.");
 			} catch (Exception ex) {
 				ModernVotifier.log(Level.WARNING, "Exception caught while receiving a vote notification");
 			}
 		}
 	}
 
-	private String readString(byte[] data, int offset) {
+	private String read(byte[] data, int offset) {
 		StringBuilder builder = new StringBuilder();
 		for (int i = offset; i < data.length; i++) {
-			if (data[i] == '\n')
+			if (data[i] == '\n') {
 				break;
+			}
 			builder.append((char) data[i]);
 		}
 		return builder.toString();

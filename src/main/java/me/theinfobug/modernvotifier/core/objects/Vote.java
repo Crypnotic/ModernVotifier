@@ -2,46 +2,37 @@ package me.theinfobug.modernvotifier.core.objects;
 
 public class Vote {
 
-	private String serviceName;
+	private String service;
 	private String username;
 	private String address;
-	private String timeStamp;
+	private String timestamp;
 
-	@Override
-	public String toString() {
-		return "Vote (from:" + serviceName + " username:" + username + " address:" + address + " timeStamp:"
-				+ timeStamp + ")";
-	}
-
-	public void setServiceName(String serviceName) {
-		this.serviceName = serviceName;
+	public Vote(String service, String username, String address, String timestamp) {
+		this.service = service;
+		this.username = username;
+		this.address = address;
+		this.timestamp = timestamp;
 	}
 
 	public String getServiceName() {
-		return serviceName;
-	}
-
-	public void setUsername(String username) {
-		this.username = username.length() <= 16 ? username : username.substring(0, 16);
+		return service;
 	}
 
 	public String getUsername() {
 		return username;
 	}
 
-	public void setAddress(String address) {
-		this.address = address;
-	}
-
 	public String getAddress() {
 		return address;
 	}
 
-	public void setTimeStamp(String timeStamp) {
-		this.timeStamp = timeStamp;
+	public String getTimeStamp() {
+		return timestamp;
 	}
 
-	public String getTimeStamp() {
-		return timeStamp;
+	@Override
+	public String toString() {
+		return "Vote (from=" + service + ", username=" + username + ", address=" + address + ", timestamp=" + timestamp
+				+ ")";
 	}
 }
