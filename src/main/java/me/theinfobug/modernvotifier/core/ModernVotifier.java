@@ -78,7 +78,7 @@ public class ModernVotifier {
 			this.port = Integer.parseInt(config.get("port"));
 			this.debug = Boolean.parseBoolean(config.get("debug"));
 			
-			receiver = new VoteReceiver(this, host, port);
+			receiver = new VoteReceiver(keyPair, version, host, port, debug);
 			receiver.start();
 		} catch (Exception exception) {
 			log(Level.SEVERE, "An error occured whilst attempting to start the VoteReceiver. Exiting...");
