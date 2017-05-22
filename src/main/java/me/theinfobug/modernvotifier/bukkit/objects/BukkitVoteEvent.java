@@ -1,12 +1,12 @@
 package me.theinfobug.modernvotifier.bukkit.objects;
 
 import me.theinfobug.modernvotifier.core.objects.Vote;
-import me.theinfobug.modernvotifier.core.objects.events.VoteEvent;
+import me.theinfobug.modernvotifier.core.objects.events.IVoteEvent;
 
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class BukkitVoteEvent extends Event implements VoteEvent {
+public class BukkitVoteEvent extends Event implements IVoteEvent {
 
 	private static final HandlerList handlers = new HandlerList();
 	private Vote vote;

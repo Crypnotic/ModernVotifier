@@ -16,7 +16,7 @@ public class ModernVotifier {
 	private IPlatform platform;
 	private String version;
 	private IConfig config;
-	private KeyPair keyPair;
+	private KeyPair keys;
 	private VoteReceiver receiver;
 
 	/* Config Values -START- */
@@ -63,10 +63,10 @@ public class ModernVotifier {
 			File directory = new File(config.getFolder(), "rsa");
 			if (!directory.exists()) {
 				directory.mkdir();
-				keyPair = Encryption.generate(2048);
-				Encryption.saveKeypair(directory, keyPair);
+				keys = Encryption.generate(2048);
+				Encryption.saveKeypair(directory, keys);
 			} else {
-				keyPair = Encryption.loadKeypair(directory);
+				keys = Encryption.loadKeypair(directory);
 			}
 		} catch (Exception exception) {
 			log(Level.SEVERE, "An error occured whilst attempting to create the RSA keypairs. Exiting...");
@@ -78,7 +78,7 @@ public class ModernVotifier {
 			this.port = Integer.parseInt(config.get("port"));
 			this.debug = Boolean.parseBoolean(config.get("debug"));
 			
-			receiver = new VoteReceiver(keyPair, version, host, port, debug);
+			receiver = new VoteReceiver(keys, version, host, port, debug);
 			receiver.start();
 		} catch (Exception exception) {
 			log(Level.SEVERE, "An error occured whilst attempting to start the VoteReceiver. Exiting...");
@@ -100,8 +100,8 @@ public class ModernVotifier {
 		return receiver;
 	}
 
-	public KeyPair getKeyPair() {
-		return keyPair;
+	public KeyPair getKeys() {
+		return keys;
 	}
 
 	public String getVersion() {

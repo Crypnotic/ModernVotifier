@@ -12,14 +12,14 @@ public class SpongeConfig implements IConfig {
 	public ModernVotifierSponge plugin;
 	private File folder;
 	private File file;
-	private ConfigurationLoader<CommentedConfigurationNode> configManager;
+	private ConfigurationLoader<CommentedConfigurationNode> loader;
 	private CommentedConfigurationNode config;
 
 	public SpongeConfig(ModernVotifierSponge plugin, File file,
-			ConfigurationLoader<CommentedConfigurationNode> configManager) {
+			ConfigurationLoader<CommentedConfigurationNode> loader) {
 		this.plugin = plugin;
 		this.file = file;
-		this.configManager = configManager;
+		this.loader = loader;
 	}
 
 	public void init() {
@@ -36,7 +36,7 @@ public class SpongeConfig implements IConfig {
 			if (!file.exists()) {
 				file.createNewFile();
 			}
-			configManager.load();
+			loader.load();
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}
@@ -60,7 +60,7 @@ public class SpongeConfig implements IConfig {
 
 	public void save() {
 		try {
-			configManager.save(config);
+			loader.save(config);
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}

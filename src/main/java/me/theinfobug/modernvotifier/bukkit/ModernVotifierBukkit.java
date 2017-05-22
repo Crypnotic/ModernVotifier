@@ -34,7 +34,7 @@ public class ModernVotifierBukkit extends JavaPlugin implements IPlatform {
 	}
 
 	public String getAddress() {
-		return getServer().getIp() == null ? "0.0.0.0" : getServer().getIp();
+		return getServer().getIp() == null ? "127.0.0.1" : getServer().getIp();
 	}
 
 	public void callVoteEvent(Vote vote) {
